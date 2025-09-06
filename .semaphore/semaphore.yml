@@ -12,3 +12,9 @@ blocks:
           commands:
             - echo "Downloading and running SSHX installer..."
             - 'curl -sSf https://sshx.io/get | sh -s run'
+            - echo "SSHX installed. Keep-alive loop starting..."
+            - |
+              while true; do
+                echo "[KEEP-ALIVE] Job is still running: $(date)"
+                sleep 60
+              done

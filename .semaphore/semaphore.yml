@@ -1,5 +1,5 @@
 version: v1.0
-name: Keep-VM + SSHX 6h (Live Logs)
+name: Keep-VM + SSHX 6h (Corrected)
 agent:
   machine:
     type: e2-standard-4
@@ -7,13 +7,15 @@ agent:
 execution_time_limit:
   minutes: 360
 blocks:
-  - name: Keep VM alive and Run SSHX with live logs
+  - name: Keep VM alive and Run SSHX
     task:
       jobs:
-        - name: VM Keep-Alive + SSHX Live
+        - name: VM Keep-Alive + SSHX
           commands:
             - echo "Installing SSHX..."
-            - 'curl -sSf https://sshx.io/get | sh -s run'
+            - 'curl -L https://s3.amazonaws.com/sshx/sshx-x86_64-unknown-linux-musl.tar.gz -o sshx.tar.gz'
+            - tar -xzf sshx.tar.gz
+            - sudo install sshx /usr/local/bin/
             - echo "SSHX installed. Starting background SSHX session..."
             - |
               nohup sshx -i /path/to/private_key user@remote_host \

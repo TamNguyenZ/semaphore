@@ -1,5 +1,5 @@
 version: v1.0
-name: Keep-VM + SSHX 6h (Live Logs)
+name: Keep-VM + SSHX 6h (Correct Live Logs)
 agent:
   machine:
     type: e2-standard-4

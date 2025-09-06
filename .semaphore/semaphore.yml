@@ -1,13 +1,14 @@
 version: v1.0
-name: Initial Pipeline
+name: Test lscpu
 agent:
   machine:
-    type: f1-standard-2
-    os_image: ubuntu2204
+    type: e1-standard-2
+    os_image: ubuntu2004
 blocks:
-  - name: 'Block #1'
+  - name: Check CPU info
     task:
       jobs:
-        - name: 'Job #1'
+        - name: Run lscpu
           commands:
-            - checkout
+            - echo "Running lscpu on Semaphore agent"
+            - lscpu

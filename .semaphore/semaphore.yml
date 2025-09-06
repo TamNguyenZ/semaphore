@@ -3,9 +3,9 @@ name: Flutter + SSHX + GPU + Keep-Alive
 agent:
   machine:
     type: gpu-standard-2
-    os_image: ubuntu2004
+    os_image: ubuntu2204-gpu
 blocks:
-  - name: Full GPU Setup Job
+  - name: Full GPU Job
     task:
       jobs:
         - name: Flutter + SSHX + GPU Runner

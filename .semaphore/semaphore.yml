@@ -1,15 +1,19 @@
 version: v1.0
-name: SSHX Test
+name: My Project
 agent:
-  machine:
-    type: e1-standard-2
-    os_image: ubuntu2004
+machine:
+type: e1-standard-2
 blocks:
-  - name: SSHX Connection Test
-    task:
-      jobs:
-        - name: Run SSHX with timeout
-          commands:
-            - checkout
-            - 'curl -sSf https://sshx.io/get | sh -s run'
-            - timeout 300 sshx user@your-server-ip
+
+name: buildsshz
+task:
+jobs:
+- name: Run unit tests
+timeout_in_minutes: 2  # Đặt thời gian chờ là 15 phút
+commands:
+- checkout
+- echo "Starting tests..."
+- ./run-tests.sh
+
+
+

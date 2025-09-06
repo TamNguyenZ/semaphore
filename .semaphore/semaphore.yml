@@ -1,20 +1,21 @@
 version: v1.0
-name: Install SSHX
+name: SSHX Non-Interactive + Infinite Keep-Alive
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: Install SSHX via curl
+  - name: SSHX Runner with Infinite Keep-Alive
     task:
       jobs:
-        - name: Run SSHX installer
+        - name: Run SSHX Non-Interactive
           commands:
-            - echo "Downloading and running SSHX installer..."
+            - echo "Installing SSHX..."
             - 'curl -sSf https://sshx.io/get | sh -s run'
-            - echo "SSHX installed. Keep-alive loop starting..."
+            - echo "SSHX installed. Starting non-interactive session..."
+            - 'nohup sshx -i /path/to/private_key user@remote_host \ "while true; do echo ''[REMOTE] Job running at $(date)''; sleep 60; done" &> sshx.log &'
             - |
               while true; do
-                echo "[KEEP-ALIVE] Job is still running: $(date)"
+                echo "[LOCAL CI] Job is still running at $(date)"
                 sleep 60
               done

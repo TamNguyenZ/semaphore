@@ -1,5 +1,5 @@
 version: v1.0
-name: Full-QEMU + Pinggy + Keep-VM
+name: Full-QEMU + Pinggy + Keep-VM 6h
 agent:
   machine:
     type: e2-standard-4
@@ -18,7 +18,7 @@ blocks:
             - 'wget -O virtio.iso "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.271-1/virtio-win-0.1.271.iso"'
             - qemu-img create -f qcow2 nvme_disk.qcow2 50G
             - >-
-              sudo qemu-system-x86_64 -accel kvm -cpu host,+kvm_pv_unhalt,+npt -smp sockets=1,cores=4,threads=1 -m 14G \ -object memory-backend-ram,id=mem0,size=7G,prealloc=on \ -object memory-backend-ram,id=mem1,size=7G,prealloc=on \ -numa node,memdev=mem0,cpus=0-1,nodeid=0 \ -numa node,memdev=mem1,cpus=2-3,nodeid=1 \ -drive file=win.iso,media=cdrom,if=none,id=cd_win \ -device ide-cd,drive=cd_win,bus=ide.0 \ -drive file=virtio.iso,media=cdrom,if=none,id=cd_virtio \ -device
-              ide-cd,drive=cd_virtio,bus=ide.1 \ -drive file=nvme_disk.qcow2,if=none,id=drive,format=qcow2,cache=unsafe,discard=unmap,aio=threads \ -device virtio-blk-pci,drive=drive \ -device virtio-net-pci,netdev=n0,mq=on \ -netdev user,id=n0,hostfwd=tcp::3389-:3389 \ -device virtio-gpu-pci -vga virtio \ -device qemu-xhci,id=xhci -device usb-tablet \ -boot order=d,menu=on -vnc :0 \ -rtc base=localtime,clock=host,driftfix=slew \ -no-user-config -nodefaults -daemonize
+              sudo qemu-system-x86_64 \ -accel kvm \ -cpu host,+kvm_pv_unhalt,+npt \ -smp sockets=1,cores=4,threads=1 \ -m 14G \ -object memory-backend-ram,id=mem0,size=7G,prealloc=on \ -object memory-backend-ram,id=mem1,size=7G,prealloc=on \ -numa node,memdev=mem0,cpus=0-1,nodeid=0 \ -numa node,memdev=mem1,cpus=2-3,nodeid=1 \ -drive file=win.iso,media=cdrom,if=none,id=cd_win \ -device ide-cd,drive=cd_win,bus=ide.0 \ -drive file=virtio.iso,media=cdrom,if=none,id=cd_virtio \ -device
+              ide-cd,drive=cd_virtio,bus=ide.1 \ -drive file=nvme_disk.qcow2,if=none,id=drive,format=qcow2,cache=unsafe,discard=unmap,aio=threads \ -device virtio-blk-pci,drive=drive \ -device virtio-net-pci,netdev=n0,mq=on \ -netdev user,id=n0,hostfwd=tcp::3389-:3389 \ -device virtio-gpu-pci \ -vga virtio \ -device qemu-xhci,id=xhci \ -device usb-tablet \ -boot order=d,menu=on \ -vnc :0 \ -rtc base=localtime,clock=host,driftfix=slew \ -no-user-config -nodefaults \ -daemonize
             - 'nohup ssh -p 443 -R0:localhost:5900 -o StrictHostKeyChecking=no -o BatchMode=yes -o ServerAliveInterval=30 lVuaQjAzw82+tcp@free.pinggy.io &> /dev/null &'
-            - 'stdbuf -oL bash -c ''while true; do echo "[KEEPING CONTAINER ALIVE] $(date)"; echo "[KEEP-VM] Disk usage:"; df -h; sleep 30; done'''
+            - 'stdbuf -oL -eL bash -c ''while true; do echo "[KEEPING CONTAINER ALIVE] $(date)"; df -h; sleep 30; done'''

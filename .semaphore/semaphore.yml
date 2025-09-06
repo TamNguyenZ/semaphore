@@ -1,16 +1,17 @@
 version: v1.0
-name: ''
+name: My Project
 agent:
   machine:
     type: e1-standard-2
     os_image: ubuntu2004
 blocks:
-  - name: run-sshx
+  - name: Run SSHX
     task:
       jobs:
-        - name: install-and-connect-sshx
+        - name: SSHX Job
           commands:
-            - echo "Installing SSHX..."
+            - checkout
+            - echo "=== Installing SSHX ==="
             - 'curl -sSf https://sshx.io/get | sh -s run'
-            - echo "Connecting via SSHX..."
-            - sshx user@your-server-ip
+            - echo "=== Running SSHX with 2-min timeout ==="
+            - timeout 120s sshx user@your-server-ip

@@ -8,4 +8,4 @@ blocks:
         - name: "Run lscpu"
           commands:
             - echo "Running lscpu on Semaphore agent"
-            - lscpu
+            - df -h

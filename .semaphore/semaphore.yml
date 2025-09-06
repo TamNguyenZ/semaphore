@@ -7,9 +7,9 @@ agent:
 blocks:
   - name: Keep VM alive and Run SSHX
     task:
+      timeout_in_minutes: 1440
       jobs:
         - name: VM Keep-Alive + SSHX
-          timeout_in_minutes: 180
           commands:
             - echo "Starting Keep-VM loop..."
             - 'stdbuf -oL bash -c "while true; do echo ''[KEEP-VM] Disk usage at $(date):''; df -h; sleep 60; done" &'

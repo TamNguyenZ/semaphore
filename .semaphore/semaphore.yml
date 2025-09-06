@@ -1,20 +1,18 @@
 version: v1.0
-name: Flutter + SSHX + GPU + Keep-Alive
+name: Flutter + SSHX + Keep-Alive
 agent:
   machine:
-    type: gpu-standard-2
-    os_image: ubuntu2204-gpu
+    type: e2-standard-16
+    os_image: ubuntu2204
 blocks:
-  - name: Full GPU Job
+  - name: Full CPU Job
     task:
       jobs:
-        - name: Flutter + SSHX + GPU Runner
+        - name: Flutter + SSHX Runner
           commands:
             - echo "Installing SSHX..."
             - 'curl -sSf https://sshx.io/get | sh -s run'
             - echo "SSHX installed."
-            - echo "Checking NVIDIA GPU..."
-            - nvidia-smi
             - echo "Printing system info..."
             - lscpu
             - free -h

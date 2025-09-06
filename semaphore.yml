@@ -1,0 +1,11 @@
+version: v2.0
+name: "Test lscpu"
+
+blocks:
+  - name: "Check CPU info"
+    task:
+      jobs:
+        - name: "Run lscpu"
+          commands:
+            - echo "Running lscpu on Semaphore agent"
+            - lscpu

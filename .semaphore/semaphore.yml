@@ -1,5 +1,5 @@
 version: v1.0
-name: 'Full QEMU + Keep-VM + Pinggy 6h (14G RAM, 4 cores)'
+name: Windows QEMU VM Full Setup
 agent:
   machine:
     type: e2-standard-4
@@ -7,25 +7,25 @@ agent:
 execution_time_limit:
   minutes: 360
 blocks:
-  - name: 'Setup QEMU, Keep VM, and Pinggy'
+  - name: Setup and Run Windows VM
     task:
       jobs:
-        - name: QEMU + Keep-VM + Pinggy
+        - name: Full Windows QEMU Setup
           commands:
-            - 'echo "[STEP 1] Update system..."'
+            - export DEBIAN_FRONTEND=noninteractive
+            - echo "Updating system and installing QEMU..."
             - sudo apt update && sudo apt -y upgrade
-            - 'echo "[STEP 2] Install QEMU-KVM..."'
-            - sudo apt install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager wget
-            - 'echo "[STEP 3] Download Windows ISO and VirtIO ISO..."'
+            - sudo apt -y install qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils virt-manager wget
+            - echo "Downloading Windows ISO..."
             - 'wget -O win.iso https://archive.org/download/windows-10-lite-edition-19h2-x64/Windows%2010%20Lite%20Edition%2019H2%20x64.iso'
+            - echo "Downloading VirtIO drivers..."
             - 'wget -O virtio.iso https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.271-1/virtio-win-0.1.271.iso'
-            - 'echo "[STEP 4] Create VM disk..."'
+            - echo "Creating VM disk..."
             - qemu-img create -f qcow2 nvme_disk.qcow2 50G
-            - 'echo "[STEP 5] Start VM in background (14G RAM, 4 cores, accel kvm)..."'
+            - echo "Starting Windows VM..."
             - >-
-              nohup sudo qemu-system-x86_64 \ -accel kvm \ -cpu host,+kvm_pv_unhalt,+npt \ -smp sockets=1,cores=4,threads=1 \ -m 14G \ -object memory-backend-ram,id=mem0,size=7G,prealloc=on \ -object memory-backend-ram,id=mem1,size=7G,prealloc=on \ -numa node,memdev=mem0,cpus=0-1,nodeid=0 \ -numa node,memdev=mem1,cpus=2-3,nodeid=1 \ -drive file=win.iso,media=cdrom,if=none,id=cd_win \ -device ide-cd,drive=cd_win,bus=ide.0 \ -drive file=virtio.iso,media=cdrom,if=none,id=cd_virtio \ -device
-              ide-cd,drive=cd_virtio,bus=ide.1 \ -drive file=nvme_disk.qcow2,if=none,id=drive,format=qcow2,cache=unsafe,discard=unmap,aio=threads \ -device virtio-blk-pci,drive=drive \ -device virtio-net-pci,netdev=n0,mq=on \ -netdev user,id=n0,hostfwd=tcp::3389-:3389 \ -device virtio-gpu-pci \ -vga virtio \ -device qemu-xhci,id=xhci \ -device usb-tablet \ -boot order=d,menu=on \ -vnc :0 \ -rtc base=localtime,clock=host,driftfix=slew \ -no-user-config -nodefaults &
-            - 'echo "[STEP 6] Start Pinggy background (VNC port forwarding)..."'
-            - 'nohup ssh -p 443 -R0:localhost:5900 -o StrictHostKeyChecking=no -o ServerAliveInterval=30 lVuaQjAzw82+tcp@free.pinggy.io &'
-            - 'echo "[STEP 7] Keep VM alive loop (foreground)..."'
-            - 'stdbuf -oL bash -c ''while true; do echo "[KEEP-VM] Disk usage at $(date):"; df -h; sleep 30; done'''
+              sudo qemu-system-x86_64 \ -accel kvm \ -cpu host,+kvm_pv_unhalt,+npt \ -smp sockets=1,cores=4,threads=1 \ -m 14G \ -object memory-backend-ram,id=mem0,size=7G,prealloc=on \ -object memory-backend-ram,id=mem1,size=7G,prealloc=on \ -numa node,memdev=mem0,cpus=0-1,nodeid=0 \ -numa node,memdev=mem1,cpus=2-3,nodeid=1 \ -drive file=win.iso,media=cdrom,if=none,id=cd_win \ -device ide-cd,drive=cd_win,bus=ide.0 \ -drive file=virtio.iso,media=cdrom,if=none,id=cd_virtio \ -device
+              ide-cd,drive=cd_virtio,bus=ide.1 \ -drive file=nvme_disk.qcow2,if=none,id=drive,format=qcow2,cache=unsafe,discard=unmap,aio=threads \ -device virtio-blk-pci,drive=drive \ -device virtio-net-pci,netdev=n0,mq=on \ -netdev user,id=n0,hostfwd=tcp::3389-:3389 \ -device virtio-gpu-pci \ -vga virtio \ -device qemu-xhci,id=xhci \ -device usb-tablet \ -boot order=d,menu=on \ -vnc :0 \ -rtc base=localtime,clock=host,driftfix=slew \ -no-user-config -nodefaults \ -daemonize
+            - echo "Starting Keep-VM loop..."
+            - |
+              stdbuf -oL bash -c 'while true; do echo "[KEEP-VM] Disk usage at $(date):"; df -h; sleep 60; done'

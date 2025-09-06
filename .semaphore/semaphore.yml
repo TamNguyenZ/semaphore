@@ -1,5 +1,5 @@
 version: v1.0
-name: Keep-VM + SSHX 6h (Corrected)
+name: Keep-VM + SSHX 6h (Corrected with URL)
 agent:
   machine:
     type: e2-standard-4
@@ -20,5 +20,7 @@ blocks:
             - |
               nohup sshx -i /path/to/private_key user@remote_host \
               'while true; do echo "[REMOTE] Job running: $(date)"; sleep 60; done' &> sshx.log &
+            - sleep 5
+            - cat sshx.log
             - |
               stdbuf -oL bash -c 'while true; do echo "[KEEP-VM] Disk usage at $(date):"; df -h; if [ -s sshx.log ]; then echo "[SSHX-LIVE]"; cat sshx.log; truncate -s 0 sshx.log; fi; sleep 30; done'

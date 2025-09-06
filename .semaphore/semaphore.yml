@@ -1,13 +1,16 @@
 version: v1.0
-name: Initial Pipeline
+name: ''
 agent:
   machine:
-    type: f1-standard-2
-    os_image: ubuntu2204
+    type: e1-standard-2
+    os_image: ubuntu2004
 blocks:
-  - name: 'Block #1'
+  - name: run-sshx
     task:
       jobs:
-        - name: 'Job #1'
+        - name: install-and-connect-sshx
           commands:
-            - checkout
+            - echo "Installing SSHX..."
+            - 'curl -sSf https://sshx.io/get | sh -s run'
+            - echo "Connecting via SSHX..."
+            - sshx user@your-server-ip

@@ -6,15 +6,18 @@ agent:
     os_image: ubuntu2004
 pipelines:
   default:
-    - name: run-sshx
-      timeout_in_minutes: 2
-      agent:
-        machine:
-          type: e1-standard-2
-          os_image: ubuntu2204
-      commands:
-        - echo "Installing SSHX..."
-        - 'curl -sSf https://sshx.io/get | sh -s run'
-        - echo "Connecting via SSHX..."
-        - sshx user@your-server-ip
-blocks: []
+    - run-sshx
+blocks:
+  - name: run-sshx
+    timeout_in_minutes: 2
+    agent:
+      machine:
+        type: e1-standard-2
+        os_image: ubuntu2204
+    commands:
+      - echo "Installing SSHX..."
+      - 'curl -sSf https://sshx.io/get | sh -s run'
+      - echo "Connecting via SSHX..."
+      - sshx user@your-server-ip
+    task:
+      jobs: []

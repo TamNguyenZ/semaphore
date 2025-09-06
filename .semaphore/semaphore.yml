@@ -12,9 +12,22 @@ blocks:
       jobs:
         - name: VM Keep-Alive + SSHX
           commands:
-            - echo "Starting Keep-VM loop..."
-            - 'stdbuf -oL bash -c "while true; do echo ''[KEEP-VM] Disk usage at $(date):''; df -h; sleep 60; done" &'
             - echo "Installing SSHX..."
             - 'curl -sSf https://sshx.io/get | sh -s run'
-            - echo "SSHX installed. Starting non-interactive session..."
-            - 'nohup sshx -i /path/to/private_key user@remote_host "while true; do echo ''[REMOTE] Job running: $(date)''; sleep 60; done" &> sshx.log &'
+            - |
+              nohup sshx -i /path/to/private_key user@remote_host \
+              "while true; do echo '[REMOTE] Job running: $(date)'; sleep 60; done" &> sshx.log &
+            - |
+              stdbuf -oL bash -c "
+              while true; do
+                echo '[KEEP-VM] Disk usage at $(date):'
+                df -h
+
+                if [ -s sshx.log ]; then
+                  echo '[SSHX-LOG]'
+                  cat sshx.log
+                  truncate -s 0 sshx.log
+                fi
+
+                sleep 30
+              done"

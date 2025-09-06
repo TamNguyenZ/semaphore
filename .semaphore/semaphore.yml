@@ -1,19 +1,19 @@
 version: v1.0
 name: My Project
 agent:
-machine:
-type: e1-standard-2
-blocks:
-
-name: buildsshz
-task:
-jobs:
-- name: Run unit tests
-timeout_in_minutes: 2  # Đặt thời gian chờ là 15 phút
-commands:
-- checkout
-- echo "Starting tests..."
-- ./run-tests.sh
-
-
-
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+pipelines:
+  default:
+    - name: Run unit tests
+      agent:
+        machine:
+          type: e1-standard-2
+          os_image: ubuntu2204
+      timeout_in_minutes: '2'
+      commands:
+        - checkout
+        - echo "Starting tests..."
+        - ./run-tests.sh
+blocks: []

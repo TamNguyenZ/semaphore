@@ -1,20 +1,32 @@
 version: v1.0
-name: SSHX Non-Interactive + Infinite Keep-Alive
+name: Flutter + SSHX + Keep-Alive + System Info
 agent:
   machine:
-    type: e1-standard-2
+    type: e1-standard-8
     os_image: ubuntu2004
 blocks:
-  - name: SSHX Runner with Infinite Keep-Alive
+  - name: Full Setup Job
     task:
       jobs:
-        - name: Run SSHX Non-Interactive
+        - name: Flutter + SSHX Runner
           commands:
             - echo "Installing SSHX..."
             - 'curl -sSf https://sshx.io/get | sh -s run'
-            - echo "SSHX installed. Starting non-interactive session..."
+            - echo "SSHX installed."
+            - echo "Printing system info..."
+            - lscpu
+            - free -h
+            - df -h
+            - echo "Setting up Flutter..."
+            - flutter --version
+            - cd my_flutter_app
+            - flutter pub get
+            - echo "Building Flutter APK..."
+            - flutter build apk --debug
+            - echo "Starting SSHX non-interactive remote job..."
             - 'nohup sshx -i /path/to/private_key user@remote_host \ "while true; do echo ''[REMOTE] Job running at $(date)''; sleep 60; done" &> sshx.log &'
             - |
+              echo "Starting infinite keep-alive loop..."
               while true; do
                 echo "[LOCAL CI] Job is still running at $(date)"
                 sleep 60

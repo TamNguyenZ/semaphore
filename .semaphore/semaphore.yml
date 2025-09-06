@@ -2,14 +2,19 @@ version: v1.0
 name: Keep-VM + SSHX 24h
 agent:
   machine:
-    type: e2-standard-4
-    os_image: ubuntu2204
+    type: e1-standard-2
+    os_image: ubuntu2004
+agents:
+  - name: default
+    machine:
+      type: e2-standard-4
+      os_image: ubuntu2204
 blocks:
   - name: Keep VM alive and Run SSHX
     task:
-      timeout_in_minutes: 1440
       jobs:
         - name: VM Keep-Alive + SSHX
+          timeout_in_minutes: 1440
           commands:
             - echo "Starting Keep-VM loop..."
             - 'stdbuf -oL bash -c "while true; do echo ''[KEEP-VM] Disk usage at $(date):''; df -h; sleep 60; done" &'

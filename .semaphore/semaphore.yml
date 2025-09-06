@@ -1,9 +1,9 @@
 version: v1.0
-name: Flutter + SSHX + Keep-Alive + System Info
+name: Flutter + SSHX + Keep-Alive
 agent:
   machine:
-    type: e1-standard-8
-    os_image: ubuntu2004
+    type: e2-standard-4
+    os_image: ubuntu2204
 blocks:
   - name: Full Setup Job
     task:

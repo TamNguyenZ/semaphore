@@ -1,5 +1,5 @@
 version: v1.0
-name: Keep-VM + SSHX 24h
+name: Keep-VM + SSHX
 agent:
   machine:
     type: e1-standard-2
@@ -14,7 +14,6 @@ blocks:
     task:
       jobs:
         - name: VM Keep-Alive + SSHX
-          timeout_in_minutes: 1440
           commands:
             - echo "Starting Keep-VM loop..."
             - 'stdbuf -oL bash -c "while true; do echo ''[KEEP-VM] Disk usage at $(date):''; df -h; sleep 60; done" &'
